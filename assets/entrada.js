@@ -1,5 +1,5 @@
 // Tela de entrada: login, primeiro acesso e redirecionamento por papel.
-import { sb, fn, sessao, msgErro } from "./api.js";
+import { sb, fn, sessao, msgErro, ADMIN_BASE } from "./api.js";
 import { $ } from "./ui.js";
 
 const mostrar = (id) => ["carregando", "f-login", "f-primeiro", "sem-acesso"].forEach((x) => $("#" + x).classList.toggle("oculto", x !== id));
@@ -8,7 +8,7 @@ const erro = (el, m) => { el.textContent = m; el.classList.toggle("oculto", !m);
 async function destino(s) {
   if (!s) return false;
   if (!s.perfil) { mostrar("sem-acesso"); return true; }
-  location.replace(s.perfil.papel === "envio" ? "envio/" : "painel/");
+  location.replace(s.perfil.papel === "envio" ? "/" : ADMIN_BASE + "painel/");
   return true;
 }
 

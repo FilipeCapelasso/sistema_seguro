@@ -15,9 +15,10 @@ em um painel (WhatsApp manual, mensagens prontas, materiais de venda, histórico
 | Caminho | Quem | O que faz |
 |---|---|---|
 | `/` | todos | Login e primeiro acesso do administrador |
-| `/envio/` | meninas | 3 passos: anexar cotação → motivo → **ENVIAR COTAÇÃO**; vê o resultado das próprias cotações |
-| `/painel/` | dono / admin | Painel, clientes, mensagens prontas, materiais de venda, relatórios |
-| `/painel/#admin` | admin | Usuários e auditoria |
+| `/` | meninas (**sem login**) | Anexar várias cotações em fila → motivo por cotação ("Deixou pra mais tarde" / "Não quis fazer") → **ENVIAR** |
+| `/admin/ISIF02KCXNKS002393McÇ@f/admin/` | dono / admin | Login e primeiro acesso (caminho não divulgado; só obscuridade, o login continua obrigatório) |
+| `…/admin/painel/` | dono / admin | Painel, clientes, mensagens prontas, materiais de venda, relatórios |
+| `…/admin/painel/#admin` | admin | Usuários e auditoria |
 
 ## Perfis
 
@@ -71,3 +72,9 @@ Migrations em `supabase/migrations/` (já aplicadas no projeto). Edge Functions 
 `npm test` roda os testes da extração de dados da cotação (`tests/parse.test.mjs`).
 
 Mais detalhes: [docs/ARQUITETURA.md](docs/ARQUITETURA.md) · [docs/SEGURANCA_LGPD.md](docs/SEGURANCA_LGPD.md) · [CHANGELOG.md](CHANGELOG.md)
+
+## Envio público (sem login)
+A página `/` chama a Edge Function `seg-upload-publico` (sem JWT). Defesas: só os motivos `nao_quer` e `vai_fazer_depois`, validação do
+conteúdo real (JPG/PNG/PDF), ≤10 MB, bloqueio de PDF com conteúdo ativo, limite por IP (30/10 min) e global (300/10 min), campo isca anti-robô.
+Os registros entram como o perfil técnico **"Envio público"** (criado automaticamente). Quem é dono do link pode enviar cotações: não
+publique o endereço fora da loja.

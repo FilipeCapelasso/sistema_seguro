@@ -5,46 +5,41 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#11161d">
-<title>Recuperação de Seguros — Star Motos</title>
+<title>Enviar cotação — Star Motos</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 10 22%27%3E%3Crect width=%2710%27 height=%2722%27 rx=%272%27 fill=%27%23c8102e%27/%3E%3C/svg%3E">
-<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="/assets/style.css">
 </head>
 <body>
-<main class="login">
-  <div class="card">
-    <div class="logo"><i></i> Star Motos · Seguros</div>
-    <div id="carregando" class="carregando">Carregando…</div>
+<header class="topo"><div class="marca"><i></i> Star Motos · Seguros</div></header>
 
-    <form id="f-login" class="oculto" autocomplete="on" novalidate>
-      <h1>Entrar</h1>
-      <label class="campo"><span>E-mail</span><input id="l-email" type="email" autocomplete="username" inputmode="email" required></label>
-      <label class="campo"><span>Senha</span><input id="l-senha" type="password" autocomplete="current-password" required></label>
-      <div id="l-erro" class="aviso erro oculto" role="alert"></div>
-      <button class="btn pri" style="width:100%" type="submit">Entrar</button>
-      <p class="peq mut cen" id="l-primeiro-wrap" style="margin-top:1rem"></p>
-    </form>
-
-    <form id="f-primeiro" class="oculto" autocomplete="off" novalidate>
-      <h1>Primeiro acesso</h1>
-      <p class="mut peq">Crie o administrador do sistema. Use o código de primeiro acesso entregue na implantação. Ele só funciona uma vez.</p>
-      <label class="campo"><span>Código de primeiro acesso</span><input id="p-codigo" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" required></label>
-      <label class="campo"><span>Seu nome</span><input id="p-nome" type="text" autocomplete="name" required></label>
-      <label class="campo"><span>E-mail</span><input id="p-email" type="email" autocomplete="off" inputmode="email" required></label>
-      <label class="campo"><span>Senha (mínimo 10 caracteres, com letras e números)</span><input id="p-senha" type="password" autocomplete="new-password" required></label>
-      <div id="p-erro" class="aviso erro oculto" role="alert"></div>
-      <button class="btn pri" style="width:100%" type="submit">Criar administrador</button>
-      <p class="peq cen" style="margin-top:1rem"><a href="#" id="p-voltar">Voltar ao login</a></p>
-    </form>
-
-    <div id="sem-acesso" class="oculto">
-      <h1>Sem acesso</h1>
-      <p>Sua conta não tem acesso a este sistema. Peça ao administrador para cadastrar você.</p>
-      <button class="btn" id="b-sair" style="width:100%">Sair</button>
+<main class="envio">
+  <section class="passo card">
+    <h2><b>1</b> Anexe as cotações</h2>
+    <div id="zona" class="zona" tabindex="0" role="button" aria-label="Escolher arquivos das cotações">
+      <div class="ico" aria-hidden="true">📎</div>
+      <strong>Toque para escolher as cotações</strong>
+      <span class="mut peq">Fotos (JPG, PNG) ou PDF · pode escolher vários de uma vez</span>
     </div>
-  </div>
+    <input id="arquivo" class="sr" type="file" multiple accept="image/jpeg,image/png,application/pdf" tabindex="-1">
+    <input id="foto" class="sr" type="file" accept="image/*" capture="environment" tabindex="-1">
+    <p class="cen" style="margin:.75rem 0 0"><button type="button" class="btn" id="b-foto">📷 Tirar foto agora</button></p>
+    <div id="erro1" class="aviso erro oculto" role="alert"></div>
+  </section>
+
+  <section class="passo card oculto" id="fila-card">
+    <h2><b>2</b> Por que não fechou?</h2>
+    <p class="mut peq" style="margin:.2rem 0 .6rem">Marque todas de uma vez ou escolha em cada cotação.</p>
+    <div class="motivos" id="todos" role="group" aria-label="Marcar todas"></div>
+    <ul class="hist" id="fila" style="margin-top:1rem"></ul>
+    <div id="erro2" class="aviso erro oculto" role="alert"></div>
+  </section>
+
+  <section class="passo oculto" id="envia-card">
+    <button type="button" class="btn pri btn-enviar" id="enviar">ENVIAR</button>
+    <div id="resumo" class="peq cen" style="margin-top:.6rem" aria-live="polite"></div>
+  </section>
 </main>
 
-<script src="assets/vendor/supabase.js"></script>
-<script type="module" src="assets/entrada.js"></script>
+<script type="module" src="/assets/publico.js"></script>
 </body>
 </html>

@@ -10,3 +10,7 @@ verify_jwt = true
 
 [functions.seg-admin]
 verify_jwt = false
+
+# envio público (sem login das meninas): a própria função se protege (limite por IP, validação do arquivo)
+[functions.seg-upload-publico]
+verify_jwt = false

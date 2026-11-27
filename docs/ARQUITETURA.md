@@ -55,8 +55,8 @@ Não usa Realtime, para não alterar a publicação do banco compartilhado.
 ## Estrutura de arquivos
 
 ```
-index.html            login / primeiro acesso
-envio/                tela das meninas
+index.html            página pública das meninas (sem login)
+admin/<caminho secreto>/admin/   login e painel
 painel/               painel do dono / admin
 assets/               css, módulos JS (api, ui, parse, ocr, clientes, biblioteca, relatorios, admin) e vendor/
 supabase/migrations/  schema, funções, storage, políticas

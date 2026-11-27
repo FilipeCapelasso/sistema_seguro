@@ -101,7 +101,9 @@ export async function sair() {
   location.href = raiz();
 }
 
-export const raiz = () => new URL("../", import.meta.url).pathname;
+// Caminho (não divulgado) da área administrativa. Só obscuridade: quem entra ainda precisa de login e perfil.
+export const ADMIN_BASE = "/admin/ISIF02KCXNKS002393Mc%C3%87@f/admin/";
+export const raiz = () => ADMIN_BASE;
 
 // ---------- formatação ----------
 export const esc = (s) =>

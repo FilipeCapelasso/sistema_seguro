@@ -99,7 +99,7 @@ async function montarPainel(el) {
 
 async function iniciar() {
   const s = await sessao().catch(() => null);
-  if (!s || !s.perfil || s.perfil.papel === "envio") { location.replace(s?.perfil?.papel === "envio" ? "../envio/" : raiz()); return; }
+  if (!s || !s.perfil || s.perfil.papel === "envio") { location.replace(s?.perfil?.papel === "envio" ? "/" : raiz()); return; }
   ctx.perfil = s.perfil;
   $("#quem").textContent = `${s.perfil.nome} · ${s.perfil.papel === "admin" ? "Administrador" : "Recuperação"}`;
   $("#sair").addEventListener("click", sair);

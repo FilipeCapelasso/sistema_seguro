@@ -176,3 +176,4 @@ tr.novo td:first-child { box-shadow: inset 3px 0 0 var(--pri); }
 @media print { .topo, .abas, .btn { display: none !important; } body { background: #fff; } }
 .topo .quem { max-width: 42vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 @media (max-width: 480px) { .topo { padding: .55rem .75rem; gap: .5rem; } .layout { padding: .75rem; } }
+.txt-erro { color: var(--pri-d, #a00); font-weight: 700; }
