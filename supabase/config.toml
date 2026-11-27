@@ -1,0 +1,12 @@
+# Configuração de referência para o Supabase CLI (o deploy já foi feito pelo MCP).
+# seg-admin faz a própria autenticação (inclui o "primeiro acesso" sem login), por isso verify_jwt = false.
+# seg-upload e seg-arquivo exigem JWT válido.
+
+[functions.seg-upload]
+verify_jwt = true
+
+[functions.seg-arquivo]
+verify_jwt = true
+
+[functions.seg-admin]
+verify_jwt = false

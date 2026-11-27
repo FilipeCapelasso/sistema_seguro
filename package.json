@@ -1,0 +1,17 @@
+{
+  "name": "sistema-seguro-star-motos",
+  "private": true,
+  "type": "module",
+  "version": "1.0.0",
+  "description": "Recuperação de seguros — Star Motos (site estático + Supabase)",
+  "scripts": {
+    "vendor": "node scripts/vendor.mjs",
+    "test": "node tests/parse.test.mjs"
+  },
+  "devDependencies": {
+    "@supabase/supabase-js": "2.119.2",
+    "@tesseract.js-data/por": "1.0.0",
+    "pdfjs-dist": "6.5.438",
+    "tesseract.js": "7.0.0"
+  }
+}

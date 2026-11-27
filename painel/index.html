@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#11161d">
+<title>Recuperação de Seguros — Painel</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 10 22%27%3E%3Crect width=%2710%27 height=%2722%27 rx=%272%27 fill=%27%23c8102e%27/%3E%3C/svg%3E">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<header class="topo">
+  <div class="marca"><i></i> Star Motos · Seguros</div>
+  <div class="esp"></div>
+  <span class="quem" id="quem"></span>
+  <button type="button" id="sair">Sair</button>
+</header>
+<main class="layout" id="app" hidden>
+  <nav class="abas" role="tablist" aria-label="Seções" id="abas"></nav>
+  <section id="conteudo" aria-live="polite"></section>
+</main>
+<div id="detalhe" class="fundo oculto"></div>
+
+<script src="../assets/vendor/supabase.js"></script>
+<script type="module" src="../assets/painel.js"></script>
+</body>
+</html>
