@@ -12,6 +12,11 @@
 <body>
 <header class="topo"><div class="marca"><i></i> Star Motos · Seguros</div></header>
 
+<section class="hero">
+  <h1>Enviar cotações</h1>
+  <p>Anexe as cotações, marque o motivo e toque em enviar. Leva poucos segundos.</p>
+</section>
+
 <main class="envio">
   <section class="passo card">
     <h2><b>1</b> Anexe as cotações</h2>
@@ -34,9 +39,10 @@
     <div id="erro2" class="aviso erro oculto" role="alert"></div>
   </section>
 
-  <section class="passo oculto" id="envia-card">
+  <section class="passo barra-envio oculto" id="envia-card">
+    <div class="barra oculto" id="barra" role="progressbar" aria-label="Progresso do envio" aria-valuemin="0" aria-valuemax="100" style="margin:0 0 .6rem"><i id="barra-i"></i></div>
     <button type="button" class="btn pri btn-enviar" id="enviar">ENVIAR</button>
-    <div id="resumo" class="peq cen" style="margin-top:.6rem" aria-live="polite"></div>
+    <div id="resumo" class="peq cen" style="margin-top:.5rem" aria-live="polite"></div>
   </section>
 </main>
 

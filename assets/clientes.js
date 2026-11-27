@@ -22,6 +22,7 @@ export async function montarClientes(el, ctx) {
     <div class="card">
       <div class="filtros">
         <label><span>Nome ou telefone</span><input type="search" id="f-busca" placeholder="Buscar…" value="${esc(f.busca ?? "")}"></label>
+        <button type="button" class="chip mais-filtros" id="c-mais" aria-expanded="false">Mais filtros ▾</button>
         <label><span>Modelo da moto</span><input type="search" id="f-moto" value="${esc(f.moto ?? "")}"></label>
         <label><span>Seguradora</span><input type="search" id="f-seg" value="${esc(f.seguradora ?? "")}"></label>
         <label><span>Motivo da recusa</span><select id="f-motivo">${opts(MOTIVOS, "Todos")}</select></label>
@@ -61,6 +62,7 @@ export async function montarClientes(el, ctx) {
     e.currentTarget.setAttribute("aria-pressed", String(e.currentTarget.getAttribute("aria-pressed") !== "true")); ler();
   }));
   $("#c-limpar").addEventListener("click", () => ctx.irPara("clientes"));
+  $("#c-mais").addEventListener("click", (e) => { const a = el.querySelector(".filtros").classList.toggle("aberto"); e.currentTarget.setAttribute("aria-expanded", String(a)); e.currentTarget.textContent = a ? "Menos filtros ▴" : "Mais filtros ▾"; });
   ctx.recarregarClientes = carregar;
   await carregar();
 }

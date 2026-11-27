@@ -33,13 +33,14 @@ function desenhar() {
   $("#fila-card").classList.toggle("oculto", vazia);
   $("#envia-card").classList.toggle("oculto", vazia);
   $("#fila").innerHTML = fila.map((it) => `
-    <li data-id="${it.id}" style="flex-wrap:wrap;gap:.5rem;align-items:center">
-      <div style="min-width:0;flex:1 1 55%">
+    <li data-id="${it.id}" class="fila-item ${it.estado === "ok" ? "ok" : it.estado === "erro" ? "erro" : ""}">
+      <div class="mini" ${it.previa ? `style="background-image:url('${it.previa}')"` : ""}>${it.estado === "ok" ? "✓" : it.previa ? "" : "PDF"}</div>
+      <div class="info">
         <div class="peq" style="font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(it.arquivo.name)}</div>
         <div class="mut peq">${tam(it.arquivo.size)} · <span class="${it.estado === "erro" ? "txt-erro" : ""}">${esc(aviso(it))}</span></div>
       </div>
       ${it.estado === "ok" ? "" : `
-      <div class="motivos" style="flex:1 1 100%" role="radiogroup" aria-label="Motivo">
+      <div class="motivos" role="radiogroup" aria-label="Motivo">
         ${Object.entries(MOTIVOS).map(([k, v]) => `<label class="motivo"><input type="radio" name="m${it.id}" value="${k}" ${it.motivo === k ? "checked" : ""} ${it.estado === "enviando" ? "disabled" : ""}><span style="min-height:46px">${esc(v)}</span></label>`).join("")}
       </div>
       <button type="button" class="btn peq" data-rm="${it.id}" ${it.estado === "enviando" ? "disabled" : ""}>Remover</button>`}
@@ -47,7 +48,7 @@ function desenhar() {
   const pend = fila.filter((i) => i.estado !== "ok").length, ok = fila.length - pend;
   $("#enviar").disabled = enviando || pend === 0;
   $("#enviar").textContent = enviando ? "Enviando…" : fila.some((i) => i.estado === "erro") ? "TENTAR DE NOVO" : `ENVIAR ${pend > 1 ? pend + " COTAÇÕES" : "COTAÇÃO"}`;
-  $("#resumo").textContent = ok && !enviando ? `${ok} enviada${ok > 1 ? "s" : ""} com sucesso${pend ? ` · ${pend} pendente${pend > 1 ? "s" : ""}` : ""}` : "";
+  if (!enviando) $("#resumo").textContent = ok ? `${ok} enviada${ok > 1 ? "s" : ""} com sucesso${pend ? ` · ${pend} pendente${pend > 1 ? "s" : ""}` : ""}` : "";
   if (!pend && ok) $("#envia-card").classList.add("oculto");
 }
 
@@ -59,7 +60,7 @@ function adicionar(lista) {
     if (!TIPOS.includes(f.type)) { msgs.push(`"${f.name}": envie JPG, PNG ou PDF.`); continue; }
     if (f.size <= 0) { msgs.push(`"${f.name}" está vazio.`); continue; }
     if (f.size > MAX) { msgs.push(`"${f.name}" passa de 10 MB.`); continue; }
-    fila.push({ id: ++seq, arquivo: f, motivo: null, estado: "pronto", msg: "", leitura: null, ocr: "" });
+    fila.push({ id: ++seq, arquivo: f, previa: f.type === "application/pdf" ? null : URL.createObjectURL(f), motivo: null, estado: "pronto", msg: "", leitura: null, ocr: "" });
   }
   if (msgs.length) erro("erro1", msgs.join(" "));
   desenhar(); lerProxima();
@@ -85,11 +86,28 @@ function atualizarTexto(it) {
   if (li) li.textContent = aviso(it);
 }
 
+// Fotos de celular são grandes: reduz para até 2000 px (JPEG 85%) antes de enviar. Mais rápido e nunca estoura o limite.
+async function otimizar(f) {
+  if (f.type === "application/pdf" || f.size < 1.2 * 1024 * 1024) return f;
+  try {
+    const bmp = await createImageBitmap(f);
+    const k = Math.min(1, 2000 / Math.max(bmp.width, bmp.height));
+    const c = document.createElement("canvas");
+    c.width = Math.round(bmp.width * k); c.height = Math.round(bmp.height * k);
+    const g = c.getContext("2d"); g.fillStyle = "#fff"; g.fillRect(0, 0, c.width, c.height); g.drawImage(bmp, 0, 0, c.width, c.height);
+    bmp.close?.();
+    const blob = await new Promise((r) => c.toBlob(r, "image/jpeg", 0.85));
+    if (!blob || blob.size >= f.size) return f;
+    return new File([blob], f.name.replace(/\.[^.]+$/, "") + ".jpg", { type: "image/jpeg" });
+  } catch { return f; }
+}
+
 async function enviarUm(it) {
   let lido = { dados: null, origem: null };
   if (it.leitura) lido = await Promise.race([it.leitura, new Promise((r) => setTimeout(() => r(lido), 20000))]);
   const fd = new FormData();
-  fd.append("arquivo", it.arquivo, it.arquivo.name);
+  const arq = await otimizar(it.arquivo);
+  fd.append("arquivo", arq, arq.name);
   fd.append("motivo", it.motivo);
   fd.append("site", ""); // isca anti-robô: deve ficar vazio
   if (lido.dados) { fd.append("dados", JSON.stringify(lido.dados)); fd.append("origem", lido.origem); }
@@ -112,6 +130,10 @@ async function enviar() {
     return;
   }
   enviando = true; desenhar();
+  const barra = $("#barra"); barra.classList.remove("oculto");
+  let feitos = 0;
+  const prog = () => { const p = Math.round((feitos / alvo.length) * 100); $("#barra-i").style.width = p + "%"; barra.setAttribute("aria-valuenow", p); $("#resumo").textContent = `Enviando ${Math.min(feitos + 1, alvo.length)} de ${alvo.length}…`; };
+  prog();
   for (const it of alvo) {
     it.estado = "enviando"; it.msg = ""; desenhar();
     try { await enviarUm(it); it.estado = "ok"; }
@@ -122,9 +144,9 @@ async function enviar() {
         break;
       }
     }
-    desenhar();
+    feitos++; prog(); desenhar();
   }
-  enviando = false; desenhar();
+  enviando = false; barra.classList.add("oculto"); desenhar();
   const falhas = fila.filter((i) => i.estado === "erro").length;
   if (!falhas && fila.every((i) => i.estado === "ok")) concluir();
 }
@@ -140,7 +162,7 @@ function concluir() {
     <button type="button" class="btn pri" id="outra" style="width:100%">Enviar mais cotações</button></div>`;
   document.body.appendChild(d);
   const b = d.querySelector("#outra"); b.focus();
-  b.addEventListener("click", () => { d.remove(); fila = []; desenhar(); window.scrollTo({ top: 0, behavior: "smooth" }); });
+  b.addEventListener("click", () => { d.remove(); fila.forEach((i) => i.previa && URL.revokeObjectURL(i.previa)); fila = []; desenhar(); window.scrollTo({ top: 0, behavior: "smooth" }); });
 }
 
 const zona = $("#zona"), inp = $("#arquivo");
@@ -166,6 +188,6 @@ $("#fila").addEventListener("change", (e) => {
 });
 $("#fila").addEventListener("click", (e) => {
   const id = Number(e.target.closest("[data-rm]")?.dataset.rm); if (!id) return;
-  fila = fila.filter((i) => i.id !== id); desenhar();
+  const x = fila.find((i) => i.id === id); if (x?.previa) URL.revokeObjectURL(x.previa); fila = fila.filter((i) => i.id !== id); desenhar();
 });
 $("#enviar").addEventListener("click", enviar);

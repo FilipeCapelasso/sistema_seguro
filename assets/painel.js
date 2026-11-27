@@ -47,6 +47,7 @@ function atualizarBadge() {
 
 // Notificação de nova cotação: consulta leve a cada 30 s (sem alterar nada no banco compartilhado).
 async function vigiar() {
+  if (document.hidden) return; // aba em segundo plano: não consulta
   try {
     const d = await rpc("seguro_dashboard");
     if (ctx.novas != null && d.recebidos > (ctx.ultimoTotal ?? d.recebidos)) {
